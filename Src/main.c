@@ -36,6 +36,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "gyro.h"
+#include <stdio.h>
 
 /* USER CODE END Includes */
 
@@ -73,6 +74,12 @@ uint8_t z = 0;
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
+
+int _write(int file, char *ptr, int len)
+{
+	HAL_UART_Transmit(&huart1, ptr, len, 50);
+	return len;
+}
 
 /* USER CODE END PFP */
 
@@ -124,6 +131,8 @@ int main(void) {
 		x = readgyro(hspi5, Address_ACCX, x);
 		y = readgyro(hspi5, Address_ACCY, y);
 		z = readgyro(hspi5, Address_ACCZ, z);
+
+		printf("x=%3u, y=%3u, z=%3u\r\n", x, y, z);
 	}
 
 	/* USER CODE END 2 */
