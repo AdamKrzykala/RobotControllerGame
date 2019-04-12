@@ -1,0 +1,8 @@
+interface.c:8:6:initMenu	0	static
+interface.c:12:6:DrawButton	16	static
+interface.c:32:6:Display_Menu	16	static
+interface.c:48:6:Display_Odczyty	16	static
+interface.c:22:6:Display	8	static
+interface.c:72:6:menuService	0	static
+interface.c:84:6:odczytyService	0	static
+interface.c:27:6:Service	8	static

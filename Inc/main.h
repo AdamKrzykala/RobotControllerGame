@@ -33,6 +33,12 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
+#include "stm32f429i_discovery_ts.h"
+#include "stm32f429i_discovery_lcd.h"
+#include "stm32f429i_discovery.h"
+#include <stdio.h>
+#include "mems.h"
+#include "globalstruct.h"
 
 /* USER CODE END Includes */
 
@@ -55,7 +61,14 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void initPointers(DMA2D_HandleTypeDef* arg_hdma2d,
+		LTDC_HandleTypeDef* arg_hltdc, SDRAM_HandleTypeDef* arg_hsdram1);
+void dma2d_layerSettings();
+void dma2d_layerInit();
+void fmc_finishConfig();
 
+void ltdc_finishConfig();
+void ts_init(TS_StateTypeDef* struktura);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
