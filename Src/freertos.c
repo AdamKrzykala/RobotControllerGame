@@ -77,16 +77,19 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-globalClass* globalClassHandler;
 SPI_HandleTypeDef* p_hspi4;
 uint8_t config_address = 0x20;
 uint8_t config_data = 0x27;
 uint8_t Address_ACCX = 0x29;
 uint8_t Address_ACCY = 0x2B;
 uint8_t Address_ACCZ = 0x2D;
+uint8_t ACCX_Value;
+uint8_t ACCY_Value;
+uint8_t ACCZ_Value;
 
 TS_StateTypeDef struktura;
 TS_StateTypeDef* ts_struct;
+globalClass* globalClassHandler;
 uint32_t initTime;
 int flagTouch = 0; //1 - touch detected -> need do delete flag           0-touch not detected
 /* USER CODE END Variables */
@@ -116,7 +119,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 	ts_struct = &struktura;
 	ts_init(ts_struct);
-	initMenu(ts_struct);
+	initMenu(ts_struct, globalClassHandler);
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -136,10 +139,6 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
 	/* Create the thread(s) */
-		/* definition and creation of mpuTask */
-		osThreadDef(mpuTask, StartDefaultTask, osPriorityNormal, 0, 128);
-		//empty thread
-
 		/* definition and creation of lcdTask */
 		osThreadDef(LCD_handling, StartLCD_handling, osPriorityNormal, 0, 128);
 		lcdTaskHandle = osThreadCreate(osThread(LCD_handling), NULL);
@@ -169,15 +168,6 @@ void MX_FREERTOS_Init(void) {
  * @retval None
  */
 /* USER CODE END Header_StartDefaultTask */
-void StartDefaultTask(void const * argument) {
-
-	/* USER CODE BEGIN StartDefaultTask */
-	/* Infinite loop */
-	for (;;) {
-		osDelay(1);
-	}
-	/* USER CODE END StartDefaultTask */
-}
 
 /* USER CODE BEGIN Header_StartTask02 */
 /**
@@ -234,12 +224,15 @@ void StartMPU_handling(void const * argument) {
 
 	/* USER CODE BEGIN StartDefaultTask */
 	/* Infinite loop */
-	writegyro(hspi4, config_address, 0x0F);
 	for (;;) {
 		osDelay(1);
-		globalClassHandler->gyroVarX = readgyro(hspi4, Address_ACCX, globalClassHandler->gyroVarX);
-		globalClassHandler->gyroVarY = readgyro(hspi4, Address_ACCY, globalClassHandler->gyroVarY);
-		globalClassHandler->gyroVarZ = readgyro(hspi4, Address_ACCZ, globalClassHandler->gyroVarZ);
+		writegyro(hspi4, config_address, 0x0F);
+		globalClassHandler->gyroVarX = (uint8_t)readgyro(hspi4, Address_ACCX, globalClassHandler->gyroVarX);
+		globalClassHandler->gyroVarY = (uint8_t)readgyro(hspi4, Address_ACCY, globalClassHandler->gyroVarY);
+		globalClassHandler->gyroVarZ = (uint8_t)readgyro(hspi4, Address_ACCZ, globalClassHandler->gyroVarZ);
+		uint8_t ACCX_Value = globalClassHandler->gyroVarX;
+		uint8_t ACCY_Value = globalClassHandler->gyroVarY;
+		uint8_t ACCZ_Value = globalClassHandler->gyroVarZ;
 	}
 	/* USER CODE END StartDefaultTask */
 }

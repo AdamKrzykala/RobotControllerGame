@@ -69,6 +69,14 @@ typedef struct
   uint16_t Y;
   uint16_t Z;
 }TS_StateTypeDef;
+
+typedef struct _globalClass {
+	//Variables to gyroscope handling
+	uint8_t  gyroVarX;
+	uint8_t  gyroVarY;
+	uint8_t  gyroVarZ;
+	//Place for other environmental variables
+}globalClass;
 /**
   * @}
   */

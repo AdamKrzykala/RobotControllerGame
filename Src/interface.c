@@ -1,13 +1,12 @@
 #include "interface.h"
-#include "globalstruct.h"
 
 int switchingMENU_flag = 1;
 int switchingODCZYTY_flag = 1;
 int page = 0;
-char buffer[10];
 
-void initMenu(TS_StateTypeDef* str) {
+void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler) {
 	localstr = str;
+	localClassHandler = globalClassHandler;
 }
 
 void DrawButton(char* text, uint8_t line_number) {
@@ -20,17 +19,17 @@ void DrawButton(char* text, uint8_t line_number) {
 			CENTER_MODE);
 }
 
-void Display(globalClass* globalClassHandler) {
-	if (page == 0) Display_Menu(globalClassHandler);
-	if (page == 1) Display_Odczyty(globalClassHandler);
+void Display(void) {
+	if (page == 0) Display_Menu();
+	if (page == 1) Display_Odczyty();
 }
 
-void Service(globalClass* globalClassHandler) {
+void Service(void) {
 	if (page == 0) menuService();
 	if (page == 1) odczytyService();
 }
 
-void Display_Menu(globalClass* globalClassHandler) {
+void Display_Menu(void) {
 	if(switchingMENU_flag == 1) {
 		switchingMENU_flag = 0;
 		BSP_LCD_SelectLayer(1);
@@ -46,7 +45,7 @@ void Display_Menu(globalClass* globalClassHandler) {
 	}
 }
 
-void Display_Odczyty(globalClass* globalClassHandler) {
+void Display_Odczyty(void) {
 	if(switchingODCZYTY_flag == 1) {
 		switchingODCZYTY_flag = 0;
 		BSP_LCD_SelectLayer(1);
@@ -62,10 +61,10 @@ void Display_Odczyty(globalClass* globalClassHandler) {
 
 		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-		//itoa (i,buffer,10);
-		BSP_LCD_DisplayStringAt(0, 60, &globalClassHandler->gyroVarX, CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 100, &globalClassHandler->gyroVarY, CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 140, &globalClassHandler->gyroVarZ, CENTER_MODE);
+
+		BSP_LCD_DisplayStringAt(0, 60,  (uint8_t*)localClassHandler->gyroVarX, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 100, (uint8_t*)localClassHandler->gyroVarX, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 140, (uint8_t*)localClassHandler->gyroVarX, CENTER_MODE);
 
 	}
 }

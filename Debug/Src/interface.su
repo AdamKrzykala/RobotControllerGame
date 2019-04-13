@@ -1,8 +1,8 @@
-interface.c:9:6:initMenu	0	static
-interface.c:13:6:DrawButton	16	static
-interface.c:33:6:Display_Menu	16	static
-interface.c:49:6:Display_Odczyty	16	static
-interface.c:23:6:Display	16	static
-interface.c:74:6:menuService	0	static
-interface.c:86:6:odczytyService	0	static
-interface.c:28:6:Service	8	static
+interface.c:7:6:initMenu	0	static
+interface.c:12:6:DrawButton	16	static
+interface.c:32:6:Display_Menu	16	static
+interface.c:48:6:Display_Odczyty	16	static
+interface.c:22:6:Display	8	static
+interface.c:73:6:menuService	0	static
+interface.c:85:6:odczytyService	0	static
+interface.c:27:6:Service	8	static
