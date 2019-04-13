@@ -4,6 +4,7 @@
 int switchingMENU_flag = 1;
 int switchingODCZYTY_flag = 1;
 int page = 0;
+char buffer[10];
 
 void initMenu(TS_StateTypeDef* str) {
 	localstr = str;
@@ -21,7 +22,7 @@ void DrawButton(char* text, uint8_t line_number) {
 
 void Display(globalClass* globalClassHandler) {
 	if (page == 0) Display_Menu(globalClassHandler);
-	if (page == 1) Display_Odczyty();
+	if (page == 1) Display_Odczyty(globalClassHandler);
 }
 
 void Service(globalClass* globalClassHandler) {
@@ -45,7 +46,7 @@ void Display_Menu(globalClass* globalClassHandler) {
 	}
 }
 
-void Display_Odczyty(void) {
+void Display_Odczyty(globalClass* globalClassHandler) {
 	if(switchingODCZYTY_flag == 1) {
 		switchingODCZYTY_flag = 0;
 		BSP_LCD_SelectLayer(1);
@@ -61,9 +62,10 @@ void Display_Odczyty(void) {
 
 		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-		BSP_LCD_DisplayStringAt(0, 60, (uint8_t*)"X AXIS: 0.0000", CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 100, (uint8_t*)"Y AXIS: 0.0000", CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 140, (uint8_t*)"Z AXIS: 0.0000", CENTER_MODE);
+		//itoa (i,buffer,10);
+		BSP_LCD_DisplayStringAt(0, 60, &globalClassHandler->gyroVarX, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 100, &globalClassHandler->gyroVarY, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 140, &globalClassHandler->gyroVarZ, CENTER_MODE);
 
 	}
 }

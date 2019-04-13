@@ -1,8 +1,8 @@
 /*
  * menu.h
  *
- *  Created on: Mar 27, 2019
- *      Author: Artur
+ *  Created on: Mar 30, 2019
+ *      Author: Adam
  */
 
 #ifndef MENU_H_
@@ -21,7 +21,7 @@ TS_StateTypeDef* localstr;
 void initMenu(TS_StateTypeDef* str);
 void odczytyService(void);
 void menuService(void);
-void Display_Odczyty(void);
+void Display_Odczyty(globalClass* globalClassHandler);
 void Display_Menu(globalClass* globalClassHandler);
 void Service(globalClass* globalClassHandler);
 void Display(globalClass* globalClassHandler);

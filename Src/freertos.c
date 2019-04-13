@@ -87,7 +87,7 @@ uint8_t Address_ACCZ = 0x2D;
 
 TS_StateTypeDef struktura;
 TS_StateTypeDef* ts_struct;
-uint32_t startTime;
+uint32_t initTime;
 int flagTouch = 0; //1 - touch detected -> need do delete flag           0-touch not detected
 /* USER CODE END Variables */
 osThreadId mpuTaskHandle;
@@ -191,12 +191,12 @@ void StartLCD_handling(void const * argument) {
 	/* Infinite loop */
 	for (;;) {
 		osDelay(1);
-		if (HAL_GetTick() - startTime >= 50) {
+		if (HAL_GetTick() - initTime >= 50) {
 			flagTouch = 0; //wyzerowanie flagi
 
 			Display(globalClassHandler);
 			Service();
-			startTime = HAL_GetTick(); //eliminacja drgan
+			initTime = HAL_GetTick(); //eliminacja drgan
 		}
 
 	}
