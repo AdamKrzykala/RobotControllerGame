@@ -38,6 +38,7 @@ extern "C" {
 #include "stm32f429i_discovery.h"
 #include <stdio.h>
 #include "mems.h"
+#include "globalstruct.h"
 
 /* USER CODE END Includes */
 

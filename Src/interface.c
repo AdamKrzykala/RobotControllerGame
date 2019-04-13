@@ -1,12 +1,12 @@
 #include "interface.h"
+#include "globalstruct.h"
 
 int switchingMENU_flag = 1;
 int switchingODCZYTY_flag = 1;
 int page = 0;
 
-void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler) {
+void initMenu(TS_StateTypeDef* str) {
 	localstr = str;
-	localClassHandler = globalClassHandler;
 }
 
 void DrawButton(char* text, uint8_t line_number) {
@@ -19,17 +19,17 @@ void DrawButton(char* text, uint8_t line_number) {
 			CENTER_MODE);
 }
 
-void Display(void) {
-	if (page == 0) Display_Menu();
+void Display(globalClass* globalClassHandler) {
+	if (page == 0) Display_Menu(globalClassHandler);
 	if (page == 1) Display_Odczyty();
 }
 
-void Service(void) {
+void Service(globalClass* globalClassHandler) {
 	if (page == 0) menuService();
 	if (page == 1) odczytyService();
 }
 
-void Display_Menu(void) {
+void Display_Menu(globalClass* globalClassHandler) {
 	if(switchingMENU_flag == 1) {
 		switchingMENU_flag = 0;
 		BSP_LCD_SelectLayer(1);
@@ -61,10 +61,9 @@ void Display_Odczyty(void) {
 
 		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-
-		BSP_LCD_DisplayStringAt(0, 60,  (uint8_t*)localClassHandler->gyroVarX, CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 100, (uint8_t*)localClassHandler->gyroVarX, CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 140, (uint8_t*)localClassHandler->gyroVarX, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 60, (uint8_t*)"X AXIS: 0.0000", CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 100, (uint8_t*)"Y AXIS: 0.0000", CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 140, (uint8_t*)"Z AXIS: 0.0000", CENTER_MODE);
 
 	}
 }

@@ -1,8 +1,8 @@
 /*
  * menu.h
  *
- *  Created on: Mar 30, 2019
- *      Author: Adam
+ *  Created on: Mar 27, 2019
+ *      Author: Artur
  */
 
 #ifndef MENU_H_
@@ -13,17 +13,18 @@
 #include "stm32f429i_discovery_ts.h"
 #include "stm32f429i_discovery_lcd.h"
 #include "stm32f429i_discovery.h"
+#include "globalstruct.h"
 
 
 
 TS_StateTypeDef* localstr;
-globalClass* localClassHandler;
-void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler);
+void initMenu(TS_StateTypeDef* str);
 void odczytyService(void);
 void menuService(void);
 void Display_Odczyty(void);
-void Display_Menu(void);
-void Service(void);
-void Display(void);
+void Display_Menu(globalClass* globalClassHandler);
+void Service(globalClass* globalClassHandler);
+void Display(globalClass* globalClassHandler);
 void DrawButton(char* text, uint8_t line_number);
+void initMenu(TS_StateTypeDef* str);
 #endif /* MENU_H_ */
