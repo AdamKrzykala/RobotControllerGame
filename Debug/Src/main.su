@@ -1,9 +1,4 @@
-main.c:159:6:SystemClock_Config	144	static
-main.c:218:6:initPointers	16	static
-main.c:229:6:dma2d_layerSettings	0	static
-main.c:235:6:dma2d_layerInit	0	static
-main.c:241:6:fmc_finishConfig	0	static
-main.c:245:6:ltdc_finishConfig	8	static
-main.c:100:5:main	8	static
-main.c:255:6:ts_init	8	static
-main.c:266:6:Error_Handler	0	static
+main.c:71:5:main	8	static
+main.c:125:6:SystemClock_Config	88	static
+main.c:175:6:HAL_TIM_PeriodElapsedCallback	16	static
+main.c:192:6:Error_Handler	4	static
