@@ -1,0 +1,15 @@
+interface.c:241:6:onasService.part.8	0	static
+interface.c:12:6:initMenu	0	static
+interface.c:17:6:screenRefresh	8	static
+interface.c:25:6:DrawButton	16	static
+interface.c:50:6:Display_Intro	16	static
+interface.c:125:6:Display_Menu	16	static
+interface.c:139:6:Display_Start	16	static
+interface.c:155:6:Display_Odczyty	16	static
+interface.c:174:6:Display_Onas	16	static
+interface.c:35:6:Display	8	static
+interface.c:193:6:menuService	8	static
+interface.c:219:6:startService	0	static
+interface.c:230:6:odczytyService	0	static
+interface.c:241:6:onasService	0	static
+interface.c:43:6:Service	8	static

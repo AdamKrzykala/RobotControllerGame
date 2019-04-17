@@ -53,9 +53,10 @@
 #include "task.h"
 #include "main.h"
 #include "cmsis_os.h"
+#include "spi.h"
 
 /* Private includes ----------------------------------------------------------*/
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN Includes */     
 #include "stm32f429i_discovery_ts.h"
 /* USER CODE END Includes */
 
@@ -76,6 +77,14 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
+globalClass* globalClassHandler;
+SPI_HandleTypeDef* p_hspi4;
+uint8_t config_address = 0x20;
+uint8_t config_data = 0x27;
+uint8_t Address_ACCX = 0x29;
+uint8_t Address_ACCY = 0x2B;
+uint8_t Address_ACCZ = 0x2D;
+
 TS_StateTypeDef struktura;
 TS_StateTypeDef* ts_struct;
 uint32_t startTime;
@@ -85,7 +94,6 @@ osThreadId mpuTaskHandle;
 osThreadId lcdTaskHandle;
 osThreadId touchTaskHandle;
 osThreadId gameTaskHandle;
-
 /* Private function prototypes -----------------------------------------------*/
 /* USER CODE BEGIN FunctionPrototypes */
 
@@ -100,57 +108,58 @@ void StartGAME_master(void const * argument);
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
 /**
- * @brief  FreeRTOS initialization
- * @param  None
- * @retval None
- */
+  * @brief  FreeRTOS initialization
+  * @param  None
+  * @retval None
+  */
 void MX_FREERTOS_Init(void) {
-	/* USER CODE BEGIN Init */
+  /* USER CODE BEGIN Init */
 	ts_struct = &struktura;
 	ts_init(ts_struct);
-	initMenu(ts_struct);
-	/* USER CODE END Init */
+	initMenu(ts_struct,globalClassHandler);
+  /* USER CODE END Init */
 
-	/* USER CODE BEGIN RTOS_MUTEX */
+  /* USER CODE BEGIN RTOS_MUTEX */
 	/* add mutexes, ... */
-	/* USER CODE END RTOS_MUTEX */
+  /* USER CODE END RTOS_MUTEX */
 
-	/* USER CODE BEGIN RTOS_SEMAPHORES */
+  /* USER CODE BEGIN RTOS_SEMAPHORES */
 	/* add semaphores, ... */
-	/* USER CODE END RTOS_SEMAPHORES */
+  /* USER CODE END RTOS_SEMAPHORES */
 
-	/* USER CODE BEGIN RTOS_TIMERS */
+  /* USER CODE BEGIN RTOS_TIMERS */
 	/* start timers, add new ones, ... */
-	/* USER CODE END RTOS_TIMERS */
+  /* USER CODE END RTOS_TIMERS */
+
+  /* USER CODE BEGIN RTOS_QUEUES */
+	/* add queues, ... */
+  /* USER CODE END RTOS_QUEUES */
 
 	/* Create the thread(s) */
-	/* definition and creation of mpuTask */
-	osThreadDef(mpuTask, StartDefaultTask, osPriorityNormal, 0, 128);
-	//empty thread
+		/* definition and creation of mpuTask */
+		osThreadDef(mpuTask, StartDefaultTask, osPriorityNormal, 0, 128);
+		//empty thread
 
-	/* definition and creation of lcdTask */
-	osThreadDef(LCD_handling, StartLCD_handling, osPriorityNormal, 0, 128);
-	lcdTaskHandle = osThreadCreate(osThread(LCD_handling), NULL);
+		/* definition and creation of lcdTask */
+		osThreadDef(LCD_handling, StartLCD_handling, osPriorityNormal, 0, 128);
+		lcdTaskHandle = osThreadCreate(osThread(LCD_handling), NULL);
 
-	/* definition and creation of touchTask */
-	osThreadDef(TS_handling, StartTS_handling, osPriorityNormal, 0, 128);
-	touchTaskHandle = osThreadCreate(osThread(TS_handling), NULL);
+		/* definition and creation of touchTask */
+		osThreadDef(TS_handling, StartTS_handling, osPriorityNormal, 0, 128);
+		touchTaskHandle = osThreadCreate(osThread(TS_handling), NULL);
 
-	/* definition and creation of mpuTask */
-	osThreadDef(MPU_handling, StartMPU_handling, osPriorityNormal, 0, 128);
-	mpuTaskHandle = osThreadCreate(osThread(MPU_handling), NULL);
+		/* definition and creation of mpuTask */
+		osThreadDef(MPU_handling, StartMPU_handling, osPriorityNormal, 0, 128);
+		mpuTaskHandle = osThreadCreate(osThread(MPU_handling), NULL);
 
-	/* definition and creation of mpuTask */
-	osThreadDef(GAME_master, StartGAME_master, osPriorityNormal, 0, 128);
-	gameTaskHandle = osThreadCreate(osThread(GAME_master), NULL);
+		/* definition and creation of mpuTask */
+		osThreadDef(GAME_master, StartGAME_master, osPriorityNormal, 0, 128);
+		gameTaskHandle = osThreadCreate(osThread(GAME_master), NULL);
 
-	/* USER CODE BEGIN RTOS_THREADS */
+  /* USER CODE BEGIN RTOS_THREADS */
 	/* add threads, ... */
-	/* USER CODE END RTOS_THREADS */
+  /* USER CODE END RTOS_THREADS */
 
-	/* USER CODE BEGIN RTOS_QUEUES */
-	/* add queues, ... */
-	/* USER CODE END RTOS_QUEUES */
 }
 
 /* USER CODE BEGIN Header_StartDefaultTask */
@@ -185,8 +194,8 @@ void StartLCD_handling(void const * argument) {
 		if (HAL_GetTick() - startTime >= 50) {
 			flagTouch = 0; //wyzerowanie flagi
 
-			DisplayCurrentScene();
-			HandleCurrentScene();
+			Display(globalClassHandler);
+			Service();
 			startTime = HAL_GetTick(); //eliminacja drgan
 		}
 
@@ -209,12 +218,8 @@ void StartTS_handling(void const * argument) {
 		BSP_TS_GetState(ts_struct);
 		if (ts_struct->TouchDetected) {
 			HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_SET);
-			//buforSize = sprintf(bufor, "wykryto dotyk. x=%d , y=%d\r\n",
-			//		struktura->X, struktura->Y);
-			//flagTouch = 1;
-
-			//HAL_UART_Transmit(&huart5, bufor, buforSize, HAL_MAX_DELAY);
-		} else {
+		}
+		else {
 			HAL_GPIO_WritePin(LD3_GPIO_Port, LD3_Pin, GPIO_PIN_RESET);
 		}
 
@@ -229,8 +234,12 @@ void StartMPU_handling(void const * argument) {
 
 	/* USER CODE BEGIN StartDefaultTask */
 	/* Infinite loop */
+	writegyro(hspi4, config_address, 0x0F);
 	for (;;) {
 		osDelay(1);
+		globalClassHandler->gyroVarX = readgyro(hspi4, Address_ACCX, globalClassHandler->gyroVarX);
+		globalClassHandler->gyroVarY = readgyro(hspi4, Address_ACCY, globalClassHandler->gyroVarY);
+		globalClassHandler->gyroVarZ = readgyro(hspi4, Address_ACCZ, globalClassHandler->gyroVarZ);
 	}
 	/* USER CODE END StartDefaultTask */
 }
@@ -245,7 +254,6 @@ void StartGAME_master(void const * argument) {
 	}
 	/* USER CODE END StartDefaultTask */
 }
-
 
 
 /* Private application code --------------------------------------------------*/

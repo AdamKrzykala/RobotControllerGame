@@ -1,6 +1,6 @@
-freertos.c:239:6:StartGAME_master	8	static
-freertos.c:180:6:StartLCD_handling	8	static
-freertos.c:204:6:StartTS_handling	8	static
-freertos.c:228:6:StartMPU_handling	8	static
-freertos.c:107:6:MX_FREERTOS_Init	96	static
-freertos.c:163:6:StartDefaultTask	8	static
+freertos.c:248:6:StartGAME_master	8	static
+freertos.c:189:6:StartLCD_handling	8	static
+freertos.c:213:6:StartTS_handling	8	static
+freertos.c:233:6:StartMPU_handling	88	static
+freertos.c:115:6:MX_FREERTOS_Init	96	static
+freertos.c:172:6:StartDefaultTask	8	static

@@ -36,6 +36,10 @@ extern "C" {
 #include "stm32f429i_discovery_ts.h"
 #include "stm32f429i_discovery_lcd.h"
 #include "stm32f429i_discovery.h"
+#include <stdio.h>
+#include "mems.h"
+#include "globalstruct.h"
+
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
