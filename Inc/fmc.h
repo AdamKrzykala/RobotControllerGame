@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : dma.h
-  * Description        : This file contains all the function prototypes for
-  *                      the dma.c file
+  * File Name          : FMC.h
+  * Description        : This file provides code for the configuration
+  *                      of the FMC peripheral.
   ******************************************************************************
   * @attention
   *
@@ -17,9 +17,8 @@
   ******************************************************************************
   */
 /* Define to prevent recursive inclusion -------------------------------------*/
-#ifndef __dma_H
-#define __dma_H
-
+#ifndef __FMC_H
+#define __FMC_H
 #ifdef __cplusplus
  extern "C" {
 #endif
@@ -27,17 +26,19 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 
-/* DMA memory to memory transfer handles -------------------------------------*/
-
 /* USER CODE BEGIN Includes */
 
 /* USER CODE END Includes */
+
+extern SDRAM_HandleTypeDef hsdram1;
 
 /* USER CODE BEGIN Private defines */
 
 /* USER CODE END Private defines */
 
-void MX_DMA_Init(void);
+void MX_FMC_Init(void);
+void HAL_SDRAM_MspInit(SDRAM_HandleTypeDef* hsdram);
+void HAL_SDRAM_MspDeInit(SDRAM_HandleTypeDef* hsdram);
 
 /* USER CODE BEGIN Prototypes */
 
@@ -46,8 +47,11 @@ void MX_DMA_Init(void);
 #ifdef __cplusplus
 }
 #endif
+#endif /*__FMC_H */
 
-#endif /* __dma_H */
+/**
+  * @}
+  */
 
 /**
   * @}

@@ -9,10 +9,10 @@
   * <h2><center>&copy; Copyright (c) 2019 STMicroelectronics.
   * All rights reserved.</center></h2>
   *
-  * This software component is licensed by ST under BSD 3-Clause license,
-  * the "License"; You may not use this file except in compliance with the
-  * License. You may obtain a copy of the License at:
-  *                        opensource.org/licenses/BSD-3-Clause
+  * This software component is licensed by ST under Ultimate Liberty license
+  * SLA0044, the "License"; You may not use this file except in compliance with
+  * the License. You may obtain a copy of the License at:
+  *                             www.st.com/SLA0044
   *
   ******************************************************************************
   */
@@ -57,8 +57,9 @@
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
-extern DMA_HandleTypeDef hdma_spi5_rx;
-extern DMA_HandleTypeDef hdma_spi5_tx;
+extern HCD_HandleTypeDef hhcd_USB_OTG_HS;
+extern DMA2D_HandleTypeDef hdma2d;
+extern LTDC_HandleTypeDef hltdc;
 extern TIM_HandleTypeDef htim6;
 
 /* USER CODE BEGIN EV */
@@ -162,19 +163,6 @@ void DebugMon_Handler(void)
 /******************************************************************************/
 
 /**
-  * @brief This function handles RCC global interrupt.
-  */
-void RCC_IRQHandler(void)
-{
-  /* USER CODE BEGIN RCC_IRQn 0 */
-
-  /* USER CODE END RCC_IRQn 0 */
-  /* USER CODE BEGIN RCC_IRQn 1 */
-
-  /* USER CODE END RCC_IRQn 1 */
-}
-
-/**
   * @brief This function handles TIM6 global interrupt, DAC1 and DAC2 underrun error interrupts.
   */
 void TIM6_DAC_IRQHandler(void)
@@ -189,31 +177,45 @@ void TIM6_DAC_IRQHandler(void)
 }
 
 /**
-  * @brief This function handles DMA2 stream3 global interrupt.
+  * @brief This function handles USB On The Go HS global interrupt.
   */
-void DMA2_Stream3_IRQHandler(void)
+void OTG_HS_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA2_Stream3_IRQn 0 */
+  /* USER CODE BEGIN OTG_HS_IRQn 0 */
 
-  /* USER CODE END DMA2_Stream3_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_spi5_rx);
-  /* USER CODE BEGIN DMA2_Stream3_IRQn 1 */
+  /* USER CODE END OTG_HS_IRQn 0 */
+  HAL_HCD_IRQHandler(&hhcd_USB_OTG_HS);
+  /* USER CODE BEGIN OTG_HS_IRQn 1 */
 
-  /* USER CODE END DMA2_Stream3_IRQn 1 */
+  /* USER CODE END OTG_HS_IRQn 1 */
 }
 
 /**
-  * @brief This function handles DMA2 stream4 global interrupt.
+  * @brief This function handles LTDC global interrupt.
   */
-void DMA2_Stream4_IRQHandler(void)
+void LTDC_IRQHandler(void)
 {
-  /* USER CODE BEGIN DMA2_Stream4_IRQn 0 */
+  /* USER CODE BEGIN LTDC_IRQn 0 */
 
-  /* USER CODE END DMA2_Stream4_IRQn 0 */
-  HAL_DMA_IRQHandler(&hdma_spi5_tx);
-  /* USER CODE BEGIN DMA2_Stream4_IRQn 1 */
+  /* USER CODE END LTDC_IRQn 0 */
+  HAL_LTDC_IRQHandler(&hltdc);
+  /* USER CODE BEGIN LTDC_IRQn 1 */
 
-  /* USER CODE END DMA2_Stream4_IRQn 1 */
+  /* USER CODE END LTDC_IRQn 1 */
+}
+
+/**
+  * @brief This function handles DMA2D global interrupt.
+  */
+void DMA2D_IRQHandler(void)
+{
+  /* USER CODE BEGIN DMA2D_IRQn 0 */
+
+  /* USER CODE END DMA2D_IRQn 0 */
+  HAL_DMA2D_IRQHandler(&hdma2d);
+  /* USER CODE BEGIN DMA2D_IRQn 1 */
+
+  /* USER CODE END DMA2D_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */
