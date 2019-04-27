@@ -1,19 +1,25 @@
 #include "spi.h"
 #include "gyro.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 void writegyro(SPI_HandleTypeDef SPI, uint8_t address, uint8_t data) {
-	HAL_GPIO_WritePin(NCS_MEMS_SPI_GPIO_Port, NCS_MEMS_SPI_Pin, GPIO_PIN_RESET);
+    taskENTER_CRITICAL();
+	HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_RESET);
 	HAL_SPI_Transmit(&SPI, &address, 1, 50);
 	HAL_SPI_Transmit(&SPI, &data, 1, 50);
-	HAL_GPIO_WritePin(NCS_MEMS_SPI_GPIO_Port, NCS_MEMS_SPI_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_SET);
+    taskEXIT_CRITICAL();
 }
 
 uint8_t readgyro(SPI_HandleTypeDef SPI, uint8_t address, uint8_t data) {
 	address = address | 0x80;
-	HAL_GPIO_WritePin(NCS_MEMS_SPI_GPIO_Port, NCS_MEMS_SPI_Pin, GPIO_PIN_RESET);
+    taskENTER_CRITICAL();
+	HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_RESET);
 	HAL_SPI_Transmit(&SPI, &address, 1, 50);
 	HAL_SPI_Receive(&SPI, &data, 1, 50);
-	HAL_GPIO_WritePin(NCS_MEMS_SPI_GPIO_Port, NCS_MEMS_SPI_Pin, GPIO_PIN_SET);
+	HAL_GPIO_WritePin(GYRO_CS_GPIO_Port, GYRO_CS_Pin, GPIO_PIN_SET);
+    taskEXIT_CRITICAL();
 
 	return data;
 }
@@ -25,7 +31,15 @@ void gyro_init() {
 }
 
 void read_gyro(int *gyrox, int *gyroy, int *gyroz) {
-
+	static char datax[2] = { 0 };
+	static char datay[2] = { 0 };
+	static char dataz[2] = { 0 };
+	static float xgyro = 0;
+	static float ygyro = 0;
+	static float zgyro = 0;
+	static float delta[3] = { 0 };
+	static float current[3] = { 0 };
+	static float time_delay = 10;
 
 	datax[0] = readgyro(hspi5, 0x28, datax[0]);
 	datax[1] = readgyro(hspi5, 0x29, datax[1]);

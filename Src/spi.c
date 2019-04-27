@@ -67,10 +67,10 @@ void HAL_SPI_MspInit(SPI_HandleTypeDef* spiHandle)
     PF8     ------> SPI5_MISO
     PF9     ------> SPI5_MOSI 
     */
-    GPIO_InitStruct.Pin = SPI5_SCK_Pin|SPI5_MISO_Pin|SPI5_MOSI_Pin;
+    GPIO_InitStruct.Pin = GYRO_SCK_Pin|GYRO_MISO_Pin|GYRO_MOSI_Pin;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
     GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
     GPIO_InitStruct.Alternate = GPIO_AF5_SPI5;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
@@ -96,7 +96,7 @@ void HAL_SPI_MspDeInit(SPI_HandleTypeDef* spiHandle)
     PF8     ------> SPI5_MISO
     PF9     ------> SPI5_MOSI 
     */
-    HAL_GPIO_DeInit(GPIOF, SPI5_SCK_Pin|SPI5_MISO_Pin|SPI5_MOSI_Pin);
+    HAL_GPIO_DeInit(GPIOF, GYRO_SCK_Pin|GYRO_MISO_Pin|GYRO_MOSI_Pin);
 
   /* USER CODE BEGIN SPI5_MspDeInit 1 */
 

@@ -21,17 +21,9 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "cmsis_os.h"
-#include "crc.h"
-#include "dma2d.h"
-#include "gfxsimulator.h"
-#include "i2c.h"
-#include "ltdc.h"
 #include "spi.h"
-#include "tim.h"
 #include "usart.h"
-#include "usb_host.h"
 #include "gpio.h"
-#include "fmc.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -58,15 +50,6 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-char datax[2] = { 0 };
-char datay[2] = { 0 };
-char dataz[2] = { 0 };
-float xgyro = 0;
-float ygyro = 0;
-float zgyro = 0;
-float delta[3] = { 0 };
-float current[3] = { 0 };
-float time_delay = 10;
 
 /* USER CODE END PV */
 
@@ -74,11 +57,11 @@ float time_delay = 10;
 void SystemClock_Config(void);
 void MX_FREERTOS_Init(void);
 /* USER CODE BEGIN PFP */
+
 int _write(int file, unsigned char *ptr, int len) {
 	HAL_UART_Transmit(&huart1, ptr, len, 50);
 	return len;
 }
-
 /* USER CODE END PFP */
 
 /* Private user code ---------------------------------------------------------*/
@@ -113,22 +96,14 @@ int main(void) {
 
 	/* Initialize all configured peripherals */
 	MX_GPIO_Init();
-	MX_CRC_Init();
-	MX_DMA2D_Init();
-	MX_FMC_Init();
-	MX_GFXSIMULATOR_Init();
-	MX_I2C3_Init();
-	MX_LTDC_Init();
 	MX_SPI5_Init();
-	MX_TIM1_Init();
 	MX_USART1_UART_Init();
 	/* USER CODE BEGIN 2 */
 
 	gyro_init();
-	int x =0;
+	int x = 0;
 	int y = 0;
 	int z = 0;
-
 	while (1) {
 		read_gyro(&x, &y, &z);
 		printf("X-Axis: %d ", x);
@@ -137,6 +112,7 @@ int main(void) {
 
 		HAL_Delay(10);
 	}
+
 
 	/* USER CODE END 2 */
 
@@ -165,13 +141,12 @@ int main(void) {
 void SystemClock_Config(void) {
 	RCC_OscInitTypeDef RCC_OscInitStruct = { 0 };
 	RCC_ClkInitTypeDef RCC_ClkInitStruct = { 0 };
-	RCC_PeriphCLKInitTypeDef PeriphClkInitStruct = { 0 };
 
 	/** Configure the main internal regulator output voltage
 	 */
 	__HAL_RCC_PWR_CLK_ENABLE()
 	;
-	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE3);
+	__HAL_PWR_VOLTAGESCALING_CONFIG(PWR_REGULATOR_VOLTAGE_SCALE1);
 	/** Initializes the CPU, AHB and APB busses clocks
 	 */
 	RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSE;
@@ -179,10 +154,15 @@ void SystemClock_Config(void) {
 	RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
 	RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSE;
 	RCC_OscInitStruct.PLL.PLLM = 4;
-	RCC_OscInitStruct.PLL.PLLN = 72;
+	RCC_OscInitStruct.PLL.PLLN = 180;
 	RCC_OscInitStruct.PLL.PLLP = RCC_PLLP_DIV2;
-	RCC_OscInitStruct.PLL.PLLQ = 3;
+	RCC_OscInitStruct.PLL.PLLQ = 4;
 	if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK) {
+		Error_Handler();
+	}
+	/** Activate the Over-Drive mode
+	 */
+	if (HAL_PWREx_EnableOverDrive() != HAL_OK) {
 		Error_Handler();
 	}
 	/** Initializes the CPU, AHB and APB busses clocks
@@ -191,17 +171,10 @@ void SystemClock_Config(void) {
 			| RCC_CLOCKTYPE_PCLK1 | RCC_CLOCKTYPE_PCLK2;
 	RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
 	RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
-	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
-	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+	RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV4;
+	RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV2;
 
-	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK) {
-		Error_Handler();
-	}
-	PeriphClkInitStruct.PeriphClockSelection = RCC_PERIPHCLK_LTDC;
-	PeriphClkInitStruct.PLLSAI.PLLSAIN = 50;
-	PeriphClkInitStruct.PLLSAI.PLLSAIR = 2;
-	PeriphClkInitStruct.PLLSAIDivR = RCC_PLLSAIDIVR_2;
-	if (HAL_RCCEx_PeriphCLKConfig(&PeriphClkInitStruct) != HAL_OK) {
+	if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_5) != HAL_OK) {
 		Error_Handler();
 	}
 }
