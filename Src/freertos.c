@@ -247,7 +247,7 @@ void StartMPU_handling(void const * argument) {
 		//printf("X-Axis: %d ", x);
 		//printf("Y-Axis: %d ", y);
 		//printf("Z-Axis: %d\r\n", z);
-		osDelay(1);
+		osDelay(10);
 	}
 	/* USER CODE END StartDefaultTask */
 }

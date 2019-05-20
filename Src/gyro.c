@@ -78,7 +78,11 @@ void read_gyro(int *gyrox, int *gyroy, int *gyroz) {
 	delta[2] = zgyro * (time_delay);
 	current[2] += delta[2];
 
-	*gyrox = ((int) current[0])/182/8;
-	*gyroy = ((int) current[1])/182/8;
-	*gyroz = ((int) current[2])/182/8;
+	*gyrox = ((int) current[0])/182/6;
+	*gyroy = ((int) current[1])/182/6;
+	*gyroz = ((int) current[2])/182/6;
+
+	*gyrox = *gyrox % 360;
+	*gyroy = *gyroy % 360;
+	*gyroz = *gyroz % 360;
 }
