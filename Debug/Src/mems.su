@@ -1,2 +1,2 @@
 mems.c:3:6:writegyro	8	static
-mems.c:10:9:readgyro	16	static
+mems.c:10:9:readgyro	8	static

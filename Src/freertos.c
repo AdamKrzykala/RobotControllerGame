@@ -54,6 +54,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 #include "spi.h"
+#include "usart.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */     
@@ -67,18 +68,24 @@
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
+int _write(int file, unsigned char *ptr, int len) {
+	HAL_UART_Transmit(&huart1, ptr, len, 50);
+	return len;
+}
 
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+int x = 0;
+	int y = 0;
+	int z = 0;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
 globalClass* globalClassHandler;
-SPI_HandleTypeDef* p_hspi4;
+SPI_HandleTypeDef* p_hspi5;
 uint8_t config_address = 0x20;
 uint8_t config_data = 0x27;
 uint8_t Address_ACCX = 0x29;
@@ -116,7 +123,7 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE BEGIN Init */
 	ts_struct = &struktura;
 	ts_init(ts_struct);
-	initMenu(ts_struct);
+	initMenu(ts_struct, globalClassHandler);
   /* USER CODE END Init */
 
   /* USER CODE BEGIN RTOS_MUTEX */
@@ -141,7 +148,7 @@ void MX_FREERTOS_Init(void) {
 		//empty thread
 
 		/* definition and creation of lcdTask */
-		osThreadDef(LCD_handling, StartLCD_handling, osPriorityNormal, 0, 128);
+		osThreadDef(LCD_handling, StartLCD_handling, osPriorityHigh, 0, 128);
 		lcdTaskHandle = osThreadCreate(osThread(LCD_handling), NULL);
 
 		/* definition and creation of touchTask */
@@ -234,12 +241,13 @@ void StartMPU_handling(void const * argument) {
 
 	/* USER CODE BEGIN StartDefaultTask */
 	/* Infinite loop */
-	writegyro(hspi4, config_address, 0x0F);
+
 	for (;;) {
+		read_gyro(&x, &y, &z);
+		//printf("X-Axis: %d ", x);
+		//printf("Y-Axis: %d ", y);
+		//printf("Z-Axis: %d\r\n", z);
 		osDelay(1);
-		globalClassHandler->gyroVarX = readgyro(hspi4, Address_ACCX, globalClassHandler->gyroVarX);
-		globalClassHandler->gyroVarY = readgyro(hspi4, Address_ACCY, globalClassHandler->gyroVarY);
-		globalClassHandler->gyroVarZ = readgyro(hspi4, Address_ACCZ, globalClassHandler->gyroVarZ);
 	}
 	/* USER CODE END StartDefaultTask */
 }

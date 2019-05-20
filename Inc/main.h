@@ -37,7 +37,7 @@ extern "C" {
 #include "stm32f429i_discovery_lcd.h"
 #include "stm32f429i_discovery.h"
 #include <stdio.h>
-#include "mems.h"
+#include "gyro.h"
 #include "globalstruct.h"
 
 /* USER CODE END Includes */

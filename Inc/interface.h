@@ -18,13 +18,22 @@
 
 
 TS_StateTypeDef* localstr;
-void initMenu(TS_StateTypeDef* str);
-void odczytyService(void);
+globalClass* localClassHandler;
+
+void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler);
+void screenRefresh(void);
+
 void menuService(void);
+void startService(void);
+void odczytyService(void);
+void onasService(void);
+
+void Display_Menu(void);
+void Display_Start(void);
 void Display_Odczyty(void);
-void Display_Menu(globalClass* globalClassHandler);
-void Service(globalClass* globalClassHandler);
-void Display(globalClass* globalClassHandler);
+
+void Service(void);
+void Display(void);
 void DrawButton(char* text, uint8_t line_number);
-void initMenu(TS_StateTypeDef* str);
+
 #endif /* MENU_H_ */
