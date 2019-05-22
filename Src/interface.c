@@ -9,6 +9,9 @@ int switchingONAS_flag = 1;
 
 int page = 0;
 
+/*
+ * Variables expressing the angle of rotation in degrees.
+ */
 extern int x;
 extern int y;
 extern int z;
@@ -128,7 +131,7 @@ void Display_Intro(void) {
 
 void Display_Menu(void) {
 	if(switchingMENU_flag == 1) {
-		switchingMENU_flag = 0;
+//		switchingMENU_flag = 0;
 		screenRefresh();
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
@@ -140,9 +143,73 @@ void Display_Menu(void) {
 	}
 }
 
+/**
+ * Ball position.
+ */
+static uint16_t xpos = 100;
+static uint16_t ypos = 100;
+
+/**
+ * @brief Collision checking function.
+ * @param x1 The x coordinate of the first point making up the line.
+ * @param y1 The y coordinate of the first point making up the line.
+ * @param x2 The x coordinate of the second point making up the line.
+ * @param y2 The y coordinate of the second point making up the line.
+ * @waring The function works only for vertical and horizontal lines.
+ */
+static void checkcollision(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
+	if (y1 == y2){
+		if ((xpos >= (x1-10) && xpos <= (x2+10)) && (ypos > (y1-10) && ypos < (y2+10))) {
+			if (ypos > y2) {
+				ypos = y2 + 10;
+			} else {
+				ypos = y2 - 10;
+			}
+		}
+	} else if (x1 == x2) {
+		if ((xpos >= (x1-10) && xpos <= (x2+10)) && (ypos > (y1-10) && ypos < (y2+10))) {
+			if (xpos > x2) {
+				xpos = x2 + 10;
+			} else {
+				xpos = x2 - 10;
+			}
+		}
+	}
+}
+
+/*
+ * @brief Function for drawing the labyrinth and checking the collisions.
+ */
+
+static void labyrinthDraw() {
+	BSP_LCD_DrawLine(50, 225, 200, 225);
+	checkcollision(50, 225, 200, 225);
+
+	BSP_LCD_DrawLine(200, 75, 200, 225);
+	checkcollision(200, 75, 200, 225);
+
+	BSP_LCD_DrawLine(50, 75, 200, 75);
+	checkcollision(50, 75, 200, 75);
+
+	BSP_LCD_DrawLine(50, 75, 50, 100);
+	checkcollision(50, 75, 50, 100);
+
+	BSP_LCD_DrawLine(50, 75, 50, 200);
+	checkcollision(50, 75, 50, 200);
+
+	BSP_LCD_DrawLine(50, 200, 150, 200);
+	checkcollision(50, 200, 150, 200);
+
+	BSP_LCD_DrawLine(125, 75, 125, 175);
+	checkcollision(125, 75, 125, 175);
+
+	BSP_LCD_DrawLine(75, 125, 125, 125);
+	checkcollision(75, 125, 125, 125);
+}
+
 void Display_Start(void) {
 	if(switchingSTART_flag == 1) {
-		switchingSTART_flag = 0;
+//		switchingSTART_flag = 0;
 		screenRefresh();
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
@@ -150,20 +217,23 @@ void Display_Start(void) {
 		BSP_LCD_DisplayStringAt(0, 20, (uint8_t*)"SCENA GRY", CENTER_MODE);
 		DrawButton("Powrot",250);
 
-		static uint16_t xpos = 100;
-		static uint16_t ypos = 100;
-		xpos += x;
-		ypos += y;
-
 		BSP_LCD_SetTextColor(LCD_COLOR_RED);
-		BSP_LCD_FillCircle(ypos, xpos, 10);
+		BSP_LCD_FillCircle(xpos, ypos, 10);
 		BSP_LCD_SetBackColor(LCD_COLOR_RED);
+
+		labyrinthDraw();
+
+		/*
+		 * Multiplication by 0.5 for better driving.
+		 */
+		xpos += y * 0.5;
+		ypos += x * 0.5;
 	}
 }
 
 void Display_Odczyty(void) {
 	if(switchingODCZYTY_flag == 1) {
-		switchingODCZYTY_flag = 0;
+//		switchingODCZYTY_flag = 0;
 		screenRefresh();
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
