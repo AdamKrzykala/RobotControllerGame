@@ -9,6 +9,10 @@ int switchingONAS_flag = 1;
 
 int page = 0;
 
+extern int x;
+extern int y;
+extern int z;
+
 void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler) {
 	localstr = str;
 	localClassHandler = globalClassHandler;
@@ -146,8 +150,13 @@ void Display_Start(void) {
 		BSP_LCD_DisplayStringAt(0, 20, (uint8_t*)"SCENA GRY", CENTER_MODE);
 		DrawButton("Powrot",250);
 
+		static uint16_t xpos = 100;
+		static uint16_t ypos = 100;
+		xpos += x;
+		ypos += y;
+
 		BSP_LCD_SetTextColor(LCD_COLOR_RED);
-		BSP_LCD_FillCircle(100, 100, 10);
+		BSP_LCD_FillCircle(ypos, xpos, 10);
 		BSP_LCD_SetBackColor(LCD_COLOR_RED);
 	}
 }
