@@ -6,9 +6,9 @@ interface.c:47:6:Service	8	static
 interface.c:54:6:Display_Intro	16	static
 interface.c:129:6:Display_Menu	8	static
 interface.c:143:6:Display_Start	8	static
-interface.c:164:6:Display_Odczyty	8	static
-interface.c:183:6:Display_Onas	8	static
-interface.c:202:6:menuService	8	static
-interface.c:228:6:startService	8	static
-interface.c:239:6:odczytyService	8	static
-interface.c:250:6:onasService	8	static
+interface.c:164:6:Display_Odczyty	56	static
+interface.c:190:6:Display_Onas	8	static
+interface.c:209:6:menuService	8	static
+interface.c:235:6:startService	8	static
+interface.c:246:6:odczytyService	8	static
+interface.c:257:6:onasService	8	static

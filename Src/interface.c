@@ -173,9 +173,16 @@ void Display_Odczyty(void) {
 
 		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-		BSP_LCD_DisplayStringAt(0, 60, (uint8_t*)"X AXIS: 0.0000", CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 100, (uint8_t*)"Y AXIS: 0.0000", CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 140, (uint8_t*)"Z AXIS: 0.0000", CENTER_MODE);
+
+		uint8_t xaxis[14] = "X ASIX: ";
+		uint8_t yaxis[14] = "Y ASIX: ";
+		uint8_t zaxis[14] = "Z ASIX: ";
+		itoa(x, &xaxis[8], 10);
+		itoa(y, &yaxis[8], 10);
+		itoa(z, &zaxis[8], 10);
+		BSP_LCD_DisplayStringAt(0, 60, xaxis, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 100, yaxis, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 140, zaxis, CENTER_MODE);
 
 	}
 }
