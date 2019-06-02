@@ -81,8 +81,4 @@ void read_gyro(int *gyrox, int *gyroy, int *gyroz) {
 	*gyrox = ((int) current[0])/182/6;
 	*gyroy = ((int) current[1])/182/6;
 	*gyroz = ((int) current[2])/182/6;
-
-	*gyrox = *gyrox % 360;
-	*gyroy = *gyroy % 360;
-	*gyroz = *gyroz % 360;
 }
