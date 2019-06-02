@@ -7,6 +7,8 @@ int switchingSTART_flag = 1;
 int switchingODCZYTY_flag = 1;
 int switchingONAS_flag = 1;
 
+int refreshODCZYTY_flag = 0;
+
 int page = 0;
 
 /*
@@ -131,7 +133,7 @@ void Display_Intro(void) {
 
 void Display_Menu(void) {
 	if(switchingMENU_flag == 1) {
-//		switchingMENU_flag = 0;
+		switchingMENU_flag = 0;
 		screenRefresh();
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
@@ -233,7 +235,6 @@ void Display_Start(void) {
 
 void Display_Odczyty(void) {
 	if(switchingODCZYTY_flag == 1) {
-//		switchingODCZYTY_flag = 0;
 		screenRefresh();
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
@@ -243,19 +244,27 @@ void Display_Odczyty(void) {
 
 		BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-
+	}
+	if(refreshODCZYTY_flag == 1 || switchingODCZYTY_flag == 1) {
+		switchingODCZYTY_flag = 0;
+		uint8_t refreshLine[14] = "              ";
 		uint8_t xaxis[14] = "X ASIX: ";
 		uint8_t yaxis[14] = "Y ASIX: ";
 		uint8_t zaxis[14] = "Z ASIX: ";
 		itoa(x, &xaxis[8], 10);
 		itoa(y, &yaxis[8], 10);
 		itoa(z, &zaxis[8], 10);
+		BSP_LCD_DisplayStringAt(0, 60, refreshLine, CENTER_MODE);
 		BSP_LCD_DisplayStringAt(0, 60, xaxis, CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 100, yaxis, CENTER_MODE);
-		BSP_LCD_DisplayStringAt(0, 140, zaxis, CENTER_MODE);
 
-	}
+		BSP_LCD_DisplayStringAt(0, 100, refreshLine, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 100, yaxis, CENTER_MODE);
+
+		BSP_LCD_DisplayStringAt(0, 140, refreshLine, CENTER_MODE);
+		BSP_LCD_DisplayStringAt(0, 140, zaxis, CENTER_MODE);
+		}
 }
+
 
 void Display_Onas(void) {
 	if(switchingONAS_flag == 1) {
@@ -290,6 +299,7 @@ void menuService(void) {
 
 			page = 3;
 			switchingODCZYTY_flag = 1;
+			refreshODCZYTY_flag = 1;
 			HAL_Delay(50);
 				}
 		if (localstr->Y >= 180 && localstr->Y <= 224)
@@ -317,11 +327,13 @@ void odczytyService(void) {
 	if (localstr->TouchDetected) {
 		if (localstr->Y >= 250 && localstr->Y <= 294)
 				{
+			refreshODCZYTY_flag = 0;
 			page = 1;
 			switchingMENU_flag = 1;
 			HAL_Delay(50);
 		}
 	}
+
 }
 
 void onasService(void) {

@@ -34,9 +34,9 @@ void read_gyro(int *gyrox, int *gyroy, int *gyroz) {
 	static char datax[2] = { 0 };
 	static char datay[2] = { 0 };
 	static char dataz[2] = { 0 };
-	static float xgyro = 0;
-	static float ygyro = 0;
-	static float zgyro = 0;
+	float xgyro = 0;
+	float ygyro = 0;
+	float zgyro = 0;
 	static float delta[3] = { 0 };
 	static float current[3] = { 0 };
 	static float time_delay = 10;

@@ -1,4 +1,4 @@
 gyro.c:6:6:writegyro	8	static
 gyro.c:15:9:readgyro	8	static
 gyro.c:27:6:gyro_init	96	static
-gyro.c:33:6:read_gyro	112	static
+gyro.c:33:6:read_gyro	128	static
