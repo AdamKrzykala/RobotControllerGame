@@ -77,9 +77,15 @@ int _write(int file, unsigned char *ptr, int len) {
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-int x = 0;
+	int x = 0;
 	int y = 0;
 	int z = 0;
+	int current_x = 0;
+	int current_y = 0;
+	int current_z = 0;
+	int previous_x = 0;
+	int previous_y = 0;
+	int previous_z = 0;
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
@@ -95,7 +101,10 @@ uint8_t Address_ACCZ = 0x2D;
 TS_StateTypeDef struktura;
 TS_StateTypeDef* ts_struct;
 uint32_t startTime;
+uint32_t startTimeAntiWindupSystem;
 int flagTouch = 0; //1 - touch detected -> need do delete flag           0-touch not detected
+int antiWindup_flagX = 0;
+
 /* USER CODE END Variables */
 osThreadId mpuTaskHandle;
 osThreadId lcdTaskHandle;
@@ -243,7 +252,7 @@ void StartMPU_handling(void const * argument) {
 	/* Infinite loop */
 
 	for (;;) {
-		read_gyro(&x, &y, &z);
+		read_gyro(&current_x, &current_y, &current_z);
 		//printf("X-Axis: %d ", x);
 		//printf("Y-Axis: %d ", y);
 		//printf("Z-Axis: %d\r\n", z);
@@ -259,6 +268,22 @@ void StartGAME_master(void const * argument) {
 	/* Infinite loop */
 	for (;;) {
 		osDelay(1);
+		if (HAL_GetTick() - startTimeAntiWindupSystem >= 100) {
+			HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+			if(current_x - previous_x > 2) x = x + current_x - previous_x;
+			if(current_x - previous_x < -2) x = x + current_x - previous_x;
+
+			if(current_y - previous_y > 2) y = y + current_y - previous_y;
+			if(current_y - previous_y < -2) y = y + current_y - previous_y;
+
+			if(current_z - previous_z > 2) z = z + current_z - previous_z;
+			if(current_z - previous_z < -2) z = z + current_z - previous_z;
+
+			startTimeAntiWindupSystem = HAL_GetTick();
+			previous_x = current_x;
+			previous_y = current_y;
+			previous_z = current_z;
+		}
 	}
 	/* USER CODE END StartDefaultTask */
 }
