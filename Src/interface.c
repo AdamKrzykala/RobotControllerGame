@@ -18,6 +18,13 @@ extern int x;
 extern int y;
 extern int z;
 
+/**
+ * Ball start position.
+ */
+uint16_t xpos = 100;
+uint16_t ypos = 100;
+
+
 void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler) {
 	localstr = str;
 	localClassHandler = globalClassHandler;
@@ -145,11 +152,6 @@ void Display_Menu(void) {
 	}
 }
 
-/**
- * Ball position.
- */
-static uint16_t xpos = 100;
-static uint16_t ypos = 100;
 
 /**
  * @brief Collision checking function.
@@ -179,57 +181,29 @@ static void checkcollision(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
 	}
 }
 
-/*
- * @brief Function for drawing the labyrinth and checking the collisions.
- */
 
-static void labyrinthDraw() {
-	BSP_LCD_DrawLine(50, 225, 200, 225);
-	checkcollision(50, 225, 200, 225);
-
-	BSP_LCD_DrawLine(200, 75, 200, 225);
-	checkcollision(200, 75, 200, 225);
-
-	BSP_LCD_DrawLine(50, 75, 200, 75);
-	checkcollision(50, 75, 200, 75);
-
-	BSP_LCD_DrawLine(50, 75, 50, 100);
-	checkcollision(50, 75, 50, 100);
-
-	BSP_LCD_DrawLine(50, 75, 50, 200);
-	checkcollision(50, 75, 50, 200);
-
-	BSP_LCD_DrawLine(50, 200, 150, 200);
-	checkcollision(50, 200, 150, 200);
-
-	BSP_LCD_DrawLine(125, 75, 125, 175);
-	checkcollision(125, 75, 125, 175);
-
-	BSP_LCD_DrawLine(75, 125, 125, 125);
-	checkcollision(75, 125, 125, 125);
+void drawWall(uint32_t x_value, uint32_t y_value, uint32_t width_value, uint32_t height_value) {
+	BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
+	BSP_LCD_FillRect(x_value, y_value, width_value, height_value);
+	BSP_LCD_SetBackColor(LCD_COLOR_DARKBLUE);
 }
 
 void Display_Start(void) {
 	if(switchingSTART_flag == 1) {
-//		switchingSTART_flag = 0;
+		switchingSTART_flag = 0;
 		screenRefresh();
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-		BSP_LCD_DisplayStringAt(0, 20, (uint8_t*)"SCENA GRY", CENTER_MODE);
-		DrawButton("Powrot",250);
 
 		BSP_LCD_SetTextColor(LCD_COLOR_RED);
 		BSP_LCD_FillCircle(xpos, ypos, 10);
 		BSP_LCD_SetBackColor(LCD_COLOR_RED);
 
-		labyrinthDraw();
-
-		/*
-		 * Multiplication by 0.5 for better driving.
-		 */
-		xpos += y * 0.5;
-		ypos += x * 0.5;
+		drawWall(0,0,10,BSP_LCD_GetYSize()-50);
+		drawWall(BSP_LCD_GetXSize()-10,0,10,BSP_LCD_GetYSize()-50);
+		drawWall(0,0,BSP_LCD_GetXSize(),10);
+		drawWall(0,BSP_LCD_GetYSize()-50,BSP_LCD_GetXSize(),10);
 	}
 }
 
@@ -312,15 +286,25 @@ void menuService(void) {
 	}
 }
 
+void changeBallPosition() {
+	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
+	BSP_LCD_FillRect(xpos-12, ypos-12, 24, 24);
+	BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+	xpos += y;
+	ypos += x;
+	BSP_LCD_SetTextColor(LCD_COLOR_RED);
+	BSP_LCD_FillCircle(xpos, ypos, 10);
+	BSP_LCD_SetBackColor(LCD_COLOR_RED);
+	//collisionDetection();
+}
+
 void startService(void) {
 	if (localstr->TouchDetected) {
-		if (localstr->Y >= 250 && localstr->Y <= 294)
-				{
-			page = 1;
-			switchingMENU_flag = 1;
-			HAL_Delay(50);
-		}
+		x = 0;
+		y = 0;
+		z = 0;
 	}
+	changeBallPosition();
 }
 
 void odczytyService(void) {
