@@ -14,6 +14,7 @@
 #include "stm32f429i_discovery_lcd.h"
 #include "stm32f429i_discovery.h"
 #include "globalstruct.h"
+#include "main.h"
 
 
 

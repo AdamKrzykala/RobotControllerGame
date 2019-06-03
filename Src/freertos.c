@@ -269,15 +269,15 @@ void StartGAME_master(void const * argument) {
 	for (;;) {
 		osDelay(1);
 		if (HAL_GetTick() - startTimeAntiWindupSystem >= 100) {
-			HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
-			if(current_x - previous_x > 2) x = x + current_x - previous_x;
-			if(current_x - previous_x < -2) x = x + current_x - previous_x;
+			//HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+			if(current_x - previous_x > 1) x = x + current_x - previous_x;
+			if(current_x - previous_x < -1) x = x + current_x - previous_x;
 
-			if(current_y - previous_y > 2) y = y + current_y - previous_y;
-			if(current_y - previous_y < -2) y = y + current_y - previous_y;
+			if(current_y - previous_y > 1) y = y + current_y - previous_y;
+			if(current_y - previous_y < -1) y = y + current_y - previous_y;
 
-			if(current_z - previous_z > 2) z = z + current_z - previous_z;
-			if(current_z - previous_z < -2) z = z + current_z - previous_z;
+			if(current_z - previous_z > 1) z = z + current_z - previous_z;
+			if(current_z - previous_z < -1) z = z + current_z - previous_z;
 
 			startTimeAntiWindupSystem = HAL_GetTick();
 			previous_x = current_x;

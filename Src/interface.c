@@ -6,10 +6,19 @@ int switchingMENU_flag = 1;
 int switchingSTART_flag = 1;
 int switchingODCZYTY_flag = 1;
 int switchingONAS_flag = 1;
+int lastY;
+int lastX;
+
+uint8_t leftDirection = 1;
+uint8_t rightDirection = 1;
+uint8_t upDirection = 1;
+uint8_t downDirection = 1;
 
 int refreshODCZYTY_flag = 0;
 
 int page = 0;
+
+uint32_t bluePixel = 4278190208;
 
 /*
  * Variables expressing the angle of rotation in degrees.
@@ -152,36 +161,6 @@ void Display_Menu(void) {
 	}
 }
 
-
-/**
- * @brief Collision checking function.
- * @param x1 The x coordinate of the first point making up the line.
- * @param y1 The y coordinate of the first point making up the line.
- * @param x2 The x coordinate of the second point making up the line.
- * @param y2 The y coordinate of the second point making up the line.
- * @waring The function works only for vertical and horizontal lines.
- */
-static void checkcollision(uint16_t x1, uint16_t y1, uint16_t x2, uint16_t y2) {
-	if (y1 == y2){
-		if ((xpos >= (x1-10) && xpos <= (x2+10)) && (ypos > (y1-10) && ypos < (y2+10))) {
-			if (ypos > y2) {
-				ypos = y2 + 10;
-			} else {
-				ypos = y2 - 10;
-			}
-		}
-	} else if (x1 == x2) {
-		if ((xpos >= (x1-10) && xpos <= (x2+10)) && (ypos > (y1-10) && ypos < (y2+10))) {
-			if (xpos > x2) {
-				xpos = x2 + 10;
-			} else {
-				xpos = x2 - 10;
-			}
-		}
-	}
-}
-
-
 void drawWall(uint32_t x_value, uint32_t y_value, uint32_t width_value, uint32_t height_value) {
 	BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
 	BSP_LCD_FillRect(x_value, y_value, width_value, height_value);
@@ -286,16 +265,51 @@ void menuService(void) {
 	}
 }
 
+void collisionDetection() {
+	//Creating 4 corners
+	//First corner
+	if(BSP_LCD_ReadPixel(xpos-18,ypos-18) == bluePixel
+			&& BSP_LCD_ReadPixel(xpos+18,ypos-18) == bluePixel) upDirection = 0;
+	else upDirection = 1;
+	if(BSP_LCD_ReadPixel(xpos-18,ypos+18) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos-18,ypos-18) == bluePixel) leftDirection = 0;
+	else leftDirection = 1;
+	if(BSP_LCD_ReadPixel(xpos-18,ypos+18) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos+18,ypos+18) == bluePixel) downDirection = 0;
+	else downDirection = 1;
+	if(BSP_LCD_ReadPixel(xpos+18,ypos-18) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos+18,ypos+18) == bluePixel) rightDirection = 0;
+	else rightDirection = 1;
+}
+
+
 void changeBallPosition() {
+	collisionDetection();
 	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-	BSP_LCD_FillRect(xpos-12, ypos-12, 24, 24);
+	BSP_LCD_FillCircle(xpos, ypos, 11);
 	BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
-	xpos += y;
-	ypos += x;
+	if(y > 10) lastY = 10;
+	else {
+		if(y < -10) lastY = -10;
+		else lastY = y;
+	}
+
+	if(x > 10) lastX = 10;
+		else {
+			if(x < -10) lastX = -10;
+			else lastX = x;
+		}
+
+	if(y < 1 && leftDirection == 1) xpos += 0.5*lastY;
+	if(y > 1 && rightDirection == 1) xpos += 0.5*lastY;
+
+	if(x < 1 && upDirection == 1) ypos += 0.5*lastX;
+	if(x > 1 && downDirection == 1) ypos += 0.5*lastX;
+
 	BSP_LCD_SetTextColor(LCD_COLOR_RED);
 	BSP_LCD_FillCircle(xpos, ypos, 10);
 	BSP_LCD_SetBackColor(LCD_COLOR_RED);
-	//collisionDetection();
+
 }
 
 void startService(void) {
