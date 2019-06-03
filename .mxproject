@@ -1,7 +1,7 @@
 [PreviousGenFiles]
-HeaderPath=C:/Users/adamk/Desktop/LCDhandler/Inc
+HeaderPath=C:/Users/adamk/Desktop/GIT/robotcontrollergame/Inc
 HeaderFiles=gpio.h;dma2d.h;fmc.h;FreeRTOSConfig.h;i2c.h;ltdc.h;spi.h;stm32f4xx_it.h;stm32f4xx_hal_conf.h;main.h;usart.h;
-SourcePath=C:/Users/adamk/Desktop/LCDhandler/Src
+SourcePath=C:/Users/adamk/Desktop/GIT/robotcontrollergame/Src
 SourceFiles=gpio.c;dma2d.c;fmc.c;freertos.c;i2c.c;ltdc.c;spi.c;stm32f4xx_it.c;stm32f4xx_hal_msp.c;main.c;stm32f4xx_hal_timebase_tim.c;usart.c;
 
 [PreviousLibFiles]
