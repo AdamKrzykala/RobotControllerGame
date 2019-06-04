@@ -232,7 +232,10 @@ void Display_Start(void) {
 				BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize()-35,"LEVEL: 1", CENTER_MODE);
 			}
 			if(levelNumb == 2) {
-				drawFinishPoint(BSP_LCD_GetXSize()/2-10,BSP_LCD_GetYSize()/2-10);
+				drawFinishPoint(20,BSP_LCD_GetYSize()-95);
+				drawWall(100,10,10,100);
+				drawWall(180,80,10,130);
+				drawWall(10,200,170,10);
 				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
 				BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
 				BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize()-35,"LEVEL: 2", CENTER_MODE);
@@ -402,7 +405,7 @@ void startService(void) {
 		y = 0;
 		z = 0;
 	}
-	drawFinishPoint(BSP_LCD_GetXSize()/2-10,BSP_LCD_GetYSize()/2-10);
+
 	changeBallPosition();
 }
 
