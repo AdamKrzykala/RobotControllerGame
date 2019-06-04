@@ -9,11 +9,15 @@ int switchingONAS_flag = 1;
 int lastY;
 int lastX;
 
+int levelNumb = 1;
+
 uint8_t leftDirection = 1;
 uint8_t rightDirection = 1;
 uint8_t upDirection = 1;
 uint8_t downDirection = 1;
 
+uint32_t finishPointX;
+uint32_t finishPointY;
 int refreshODCZYTY_flag = 0;
 
 int page = 0;
@@ -167,6 +171,23 @@ void drawWall(uint32_t x_value, uint32_t y_value, uint32_t width_value, uint32_t
 	BSP_LCD_SetBackColor(LCD_COLOR_DARKBLUE);
 }
 
+void drawFinishPoint(uint32_t x_value, uint32_t y_value) {
+	finishPointX = x_value+15;
+	finishPointY = y_value+15;
+	BSP_LCD_SetTextColor(LCD_COLOR_GREEN);
+	BSP_LCD_FillRect(x_value, y_value, 30, 30);
+	BSP_LCD_SetBackColor(LCD_COLOR_GREEN);
+}
+
+void checkFinish() {
+	HAL_GPIO_TogglePin(LD4_GPIO_Port, LD4_Pin);
+	if((finishPointX - xpos < 10 || finishPointX - xpos > -10 )
+			&& (finishPointY - ypos < 10 || finishPointY - ypos > -10 )) {
+		levelNumb ++;
+		switchingSTART_flag = 1;
+	}
+}
+
 void Display_Start(void) {
 	if(switchingSTART_flag == 1) {
 		switchingSTART_flag = 0;
@@ -174,19 +195,49 @@ void Display_Start(void) {
 
 		BSP_LCD_SetTextColor(LCD_COLOR_DARKBLUE);
 		BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+		if(levelNumb > 2) {
+			BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+			BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+			BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize()/2,"WINNER !!!", CENTER_MODE);
+			HAL_Delay(3000);
+			page = 1;
+			switchingMENU_flag = 1;
+		}
+		else {
+			xpos = 50;
+			ypos = 50;
+			BSP_LCD_SetTextColor(LCD_COLOR_RED);
+			BSP_LCD_FillCircle(xpos, ypos, 10);
+			BSP_LCD_SetBackColor(LCD_COLOR_RED);
 
-		BSP_LCD_SetTextColor(LCD_COLOR_RED);
-		BSP_LCD_FillCircle(xpos, ypos, 10);
-		BSP_LCD_SetBackColor(LCD_COLOR_RED);
+			drawWall(0,0,10,BSP_LCD_GetYSize()-50);
+			drawWall(BSP_LCD_GetXSize()-10,0,10,BSP_LCD_GetYSize()-50);
+			drawWall(0,0,BSP_LCD_GetXSize(),10);
+			drawWall(0,BSP_LCD_GetYSize()-50,BSP_LCD_GetXSize(),10);
 
-		drawWall(0,0,10,BSP_LCD_GetYSize()-50);
-		drawWall(BSP_LCD_GetXSize()-10,0,10,BSP_LCD_GetYSize()-50);
-		drawWall(0,0,BSP_LCD_GetXSize(),10);
-		drawWall(0,BSP_LCD_GetYSize()-50,BSP_LCD_GetXSize(),10);
+			if(levelNumb == 0) {
+				drawFinishPoint(BSP_LCD_GetXSize()/2-10,BSP_LCD_GetYSize()/2-10);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+				BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize()-35,"ROZGRZEWKA", CENTER_MODE);
+			}
 
-		drawWall(BSP_LCD_GetXSize()/2-25,BSP_LCD_GetYSize()/2-25,10,50);
-		drawWall(BSP_LCD_GetXSize()/2+25,BSP_LCD_GetYSize()/2-25,10,50);
-		drawWall(BSP_LCD_GetXSize()/2-25,BSP_LCD_GetYSize()/2-25,50,10);
+			if(levelNumb == 1) {
+				drawWall(BSP_LCD_GetXSize()/2-25,BSP_LCD_GetYSize()/2-25,10,50);
+				drawWall(BSP_LCD_GetXSize()/2+25,BSP_LCD_GetYSize()/2-25,10,50);
+				drawWall(BSP_LCD_GetXSize()/2-25,BSP_LCD_GetYSize()/2-25,50,10);
+				drawFinishPoint(BSP_LCD_GetXSize()/2-10,BSP_LCD_GetYSize()/2-10);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+				BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize()-35,"LEVEL: 1", CENTER_MODE);
+			}
+			if(levelNumb == 2) {
+				drawFinishPoint(BSP_LCD_GetXSize()/2-10,BSP_LCD_GetYSize()/2-10);
+				BSP_LCD_SetTextColor(LCD_COLOR_BLACK);
+				BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
+				BSP_LCD_DisplayStringAt(0, BSP_LCD_GetYSize()-35,"LEVEL: 2", CENTER_MODE);
+			}
+		}
 	}
 }
 
@@ -249,6 +300,7 @@ void menuService(void) {
 
 			page = 2;
 			switchingSTART_flag = 1;
+			levelNumb = 0;
 			HAL_Delay(50);
 		}
 		if (localstr->Y >= 120 && localstr->Y <= 164)
@@ -341,7 +393,7 @@ void changeBallPosition() {
 	BSP_LCD_SetTextColor(LCD_COLOR_RED);
 	BSP_LCD_FillCircle(xpos, ypos, 10);
 	BSP_LCD_SetBackColor(LCD_COLOR_RED);
-
+	checkFinish();
 }
 
 void startService(void) {
@@ -350,6 +402,7 @@ void startService(void) {
 		y = 0;
 		z = 0;
 	}
+	drawFinishPoint(BSP_LCD_GetXSize()/2-10,BSP_LCD_GetYSize()/2-10);
 	changeBallPosition();
 }
 
