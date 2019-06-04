@@ -30,8 +30,8 @@ extern int z;
 /**
  * Ball start position.
  */
-uint16_t xpos = 100;
-uint16_t ypos = 100;
+uint16_t xpos = 50;
+uint16_t ypos = 50;
 
 
 void initMenu(TS_StateTypeDef* str, globalClass* globalClassHandler) {
@@ -183,6 +183,10 @@ void Display_Start(void) {
 		drawWall(BSP_LCD_GetXSize()-10,0,10,BSP_LCD_GetYSize()-50);
 		drawWall(0,0,BSP_LCD_GetXSize(),10);
 		drawWall(0,BSP_LCD_GetYSize()-50,BSP_LCD_GetXSize(),10);
+
+		drawWall(BSP_LCD_GetXSize()/2-25,BSP_LCD_GetYSize()/2-25,10,50);
+		drawWall(BSP_LCD_GetXSize()/2+25,BSP_LCD_GetYSize()/2-25,10,50);
+		drawWall(BSP_LCD_GetXSize()/2-25,BSP_LCD_GetYSize()/2-25,50,10);
 	}
 }
 
@@ -268,25 +272,53 @@ void menuService(void) {
 void collisionDetection() {
 	//Creating 4 corners
 	//First corner
-	if(BSP_LCD_ReadPixel(xpos-18,ypos-18) == bluePixel
-			&& BSP_LCD_ReadPixel(xpos+18,ypos-18) == bluePixel) upDirection = 0;
+	if((BSP_LCD_ReadPixel(xpos-22,ypos-22) == bluePixel
+			&& BSP_LCD_ReadPixel(xpos-20,ypos-22) == bluePixel)
+	|| (BSP_LCD_ReadPixel(xpos+22,ypos-22) == bluePixel
+			&& BSP_LCD_ReadPixel(xpos+20,ypos-22) == bluePixel)) upDirection = 0;
 	else upDirection = 1;
-	if(BSP_LCD_ReadPixel(xpos-18,ypos+18) == bluePixel
-				&& BSP_LCD_ReadPixel(xpos-18,ypos-18) == bluePixel) leftDirection = 0;
-	else leftDirection = 1;
-	if(BSP_LCD_ReadPixel(xpos-18,ypos+18) == bluePixel
-				&& BSP_LCD_ReadPixel(xpos+18,ypos+18) == bluePixel) downDirection = 0;
-	else downDirection = 1;
-	if(BSP_LCD_ReadPixel(xpos+18,ypos-18) == bluePixel
-				&& BSP_LCD_ReadPixel(xpos+18,ypos+18) == bluePixel) rightDirection = 0;
-	else rightDirection = 1;
+
+	if((BSP_LCD_ReadPixel(xpos-22,ypos-22) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos-22,ypos-20) == bluePixel)
+		|| (BSP_LCD_ReadPixel(xpos-22,ypos+22) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos-22,ypos+20) == bluePixel)) leftDirection = 0;
+		else leftDirection = 1;
+
+	if((BSP_LCD_ReadPixel(xpos-22,ypos+22) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos-20,ypos+22) == bluePixel)
+		|| (BSP_LCD_ReadPixel(xpos+22,ypos+22) == bluePixel
+				&& BSP_LCD_ReadPixel(xpos+20,ypos+22) == bluePixel)) downDirection = 0;
+		else downDirection = 1;
+
+	if((BSP_LCD_ReadPixel(xpos+22,ypos-22) == bluePixel
+					&& BSP_LCD_ReadPixel(xpos+22,ypos-20) == bluePixel)
+			|| (BSP_LCD_ReadPixel(xpos+22,ypos+22) == bluePixel
+					&& BSP_LCD_ReadPixel(xpos+22,ypos+20) == bluePixel)) rightDirection = 0;
+		else rightDirection = 1;
+
+	if(BSP_LCD_ReadPixel(xpos-10,ypos-22) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos+10,ypos-22) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos,ypos-22) == bluePixel) upDirection = 0;
+		else upDirection = 1;
+	if(BSP_LCD_ReadPixel(xpos-10,ypos+22) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos+10,ypos+22) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos,ypos+22) == bluePixel) downDirection = 0;
+		else downDirection = 1;
+	if(BSP_LCD_ReadPixel(xpos-22,ypos-10) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos-22,ypos) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos-22,ypos+10) == bluePixel) leftDirection = 0;
+		else leftDirection = 1;
+	if(BSP_LCD_ReadPixel(xpos+22,ypos-10) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos+22,ypos) == bluePixel
+		|| BSP_LCD_ReadPixel(xpos+22,ypos+10    ) == bluePixel) rightDirection = 0;
+		else rightDirection = 1;
 }
 
 
 void changeBallPosition() {
 	collisionDetection();
 	BSP_LCD_SetTextColor(LCD_COLOR_WHITE);
-	BSP_LCD_FillCircle(xpos, ypos, 11);
+	BSP_LCD_FillCircle(xpos, ypos, 10);
 	BSP_LCD_SetBackColor(LCD_COLOR_WHITE);
 	if(y > 10) lastY = 10;
 	else {
